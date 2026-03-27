@@ -20,11 +20,16 @@ function LinkGroup({ title, links, language }) {
 }
 
 export default function Hero({ profile, language }) {
+  const badgeText =
+    typeof profile.badge === 'object'
+      ? (profile.badge?.[language] ?? '').trim()
+      : (profile.badge ?? '').trim()
+
   return (
     <section className="hero" id="top">
       <div className="container hero-card">
         <div className="hero-copy">
-          <span className="badge">{profile.badge[language]}</span>
+          {badgeText ? <span className="badge">{badgeText}</span> : null}
           <p className="hero-name">{profile.name}</p>
           <h1>{profile.role[language]}</h1>
           <p className="hero-intro">{profile.summary[language]}</p>

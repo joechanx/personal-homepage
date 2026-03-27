@@ -100,19 +100,19 @@ img {
 }
 
 .hero {
-  padding: 32px 0 18px;
+  padding: 18px 0 18px;
 }
 
 .hero-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
-  gap: 36px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+  gap: 32px;
   align-items: center;
   background: var(--surface);
   border: 1px solid rgba(221, 229, 240, 0.9);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
-  padding: 34px;
+  padding: 24px 34px 34px;
 }
 
 .badge,
@@ -139,8 +139,12 @@ img {
   letter-spacing: 0.03em;
 }
 
+.badge:empty {
+  display: none;
+}
+
 .hero-name {
-  margin: 14px 0 0;
+  margin: 0;
   color: var(--muted);
   font-size: 0.98rem;
   font-weight: 700;
@@ -149,11 +153,11 @@ img {
 }
 
 .hero-copy h1 {
-  margin: 12px 0 0;
-  font-size: clamp(2rem, 3vw, 3rem);
-  line-height: 1.09;
-  letter-spacing: -0.02em;
-  max-width: 13ch;
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 2.6vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  max-width: none;
 }
 
 .hero-intro,
@@ -171,7 +175,7 @@ img {
 }
 
 .hero-intro {
-  margin: 18px 0 0;
+  margin: 16px 0 0;
   max-width: 54ch;
   line-height: 1.72;
   font-size: 1rem;
@@ -492,18 +496,18 @@ img {
   }
 
   .hero {
-    padding-top: 24px;
+    padding-top: 16px;
   }
 
   .hero-copy h1 {
-    max-width: 14ch;
+    max-width: none;
+    font-size: clamp(2rem, 6vw, 2.7rem);
   }
 
   .hero-link-groups {
     grid-template-columns: 1fr;
   }
 }
-
 
 @media (max-width: 720px) {
   .nav-row {

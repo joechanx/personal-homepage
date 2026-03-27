@@ -7,10 +7,7 @@ export const siteContent = {
   },
   profile: {
     name: 'Dexter Chang',
-    badge: {
-      zh: '接案型個人官網',
-      en: 'Freelance Portfolio Website',
-    },
+    badge: '',
     role: {
       zh: 'Python 整合與自動化工程師',
       en: 'Python Integration & Automation Engineer',
