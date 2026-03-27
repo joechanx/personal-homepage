@@ -150,9 +150,9 @@ img {
 
 .hero-copy h1 {
   margin: 12px 0 0;
-  font-size: clamp(2.35rem, 3.25vw, 3.2rem);
-  line-height: 1.06;
-  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1.09;
+  letter-spacing: -0.02em;
   max-width: 13ch;
 }
 
