@@ -9,7 +9,7 @@ import LinksPanel from './components/LinksPanel'
 import Footer from './components/Footer'
 
 export default function App() {
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState('zh')
 
   const currentYear = useMemo(() => new Date().getFullYear(), [])
   const pageTitle = language === 'zh' ? 'Dexter Chang｜個人首頁' : 'Dexter Chang | Personal Homepage'
