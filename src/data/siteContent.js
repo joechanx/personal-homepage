@@ -185,7 +185,7 @@ export const siteContent = {
         en: 'My focus is not on isolated feature demos, but on organizing requirements, workflow logic, integration details, and final deliverables together.',
       },
       {
-        zh: '如果你需要的是可以逐步擴充、後續仍好維護的 API integration 或 automation workflow，我會比較適合。',
+        zh: '如果你需要的是可以逐步擴充、後續仍好維護的 API integration 或 automation workflow，我是你可以考慮的人選。',
         en: 'If you need API integration or automation workflow work that can be extended later and maintained cleanly, this is where I fit best.',
       },
     ],
