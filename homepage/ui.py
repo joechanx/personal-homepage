@@ -290,6 +290,45 @@ def inject_global_styles() -> None:
           color: #5a677b;
           line-height: 1.72;
         }
+        .action-panel {
+          padding: 1.1rem 1.1rem 0.9rem;
+          border-radius: 22px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          background: rgba(255, 255, 255, 0.82);
+          box-shadow: 0 12px 30px rgba(16, 32, 51, 0.05);
+        }
+        .action-panel-title {
+          color: #102033;
+          font-size: 0.95rem;
+          font-weight: 800;
+          margin-bottom: 0.18rem;
+        }
+        .action-panel-copy {
+          color: #5a677b;
+          font-size: 0.85rem;
+          line-height: 1.6;
+          margin-bottom: 0.7rem;
+        }
+        .about-shell {
+          padding: 1.45rem;
+        }
+        .about-paragraph {
+          color: #5a677b;
+          line-height: 1.8;
+          margin: 0 0 1rem;
+        }
+        .about-paragraph:last-child {
+          margin-bottom: 0;
+        }
+        .focus-card {
+          margin-bottom: 0.9rem;
+        }
+        .contact-link-copy {
+          color: #5a677b;
+          font-size: 0.88rem;
+          line-height: 1.6;
+          margin-top: -0.15rem;
+        }
         .hero-footnote {
           color: #647288;
           font-size: 0.84rem;
@@ -680,6 +719,15 @@ def render_projects_page(site_content: dict, language: str) -> None:
                 unsafe_allow_html=True,
             )
         with right:
+            st.markdown(
+                f"""
+                <div class="action-panel">
+                  <div class="action-panel-title">{'專案入口' if language == 'zh' else 'Project links'}</div>
+                  <div class="action-panel-copy">{"可直接查看原始碼與線上展示。" if language == "zh" else "Jump straight into the source code or live demo."}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
             for item in project["links"]:
                 st.link_button(get_text(item["label"], language), item["href"], use_container_width=True)
 
@@ -772,26 +820,39 @@ def render_notes_page(
         return
 
     for note in filtered_notes:
-        st.markdown(
-            f"""
-            <div class="note-card">
-              <div class="card-label">{note.lang.upper()}</div>
-              <div class="note-title">{note.title}</div>
-              <div class="note-meta">{note.date.isoformat()}</div>
-              <div class="card-summary">{note.summary}</div>
-              <div class="stack-row">
-                {"".join(f"<span class='tag-chip'>{tag_name}</span>" for tag_name in note.tags)}
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if st.button("閱讀全文" if language == "zh" else "Read full note", key=f"note-{note.slug}"):
-            open_note(note.slug)
+        left, right = st.columns([0.78, 0.22], gap="medium")
+        with left:
+            st.markdown(
+                f"""
+                <div class="note-card">
+                  <div class="card-label">{note.lang.upper()}</div>
+                  <div class="note-title">{note.title}</div>
+                  <div class="note-meta">{note.date.isoformat()}</div>
+                  <div class="card-summary">{note.summary}</div>
+                  <div class="stack-row">
+                    {"".join(f"<span class='tag-chip'>{tag_name}</span>" for tag_name in note.tags)}
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with right:
+            st.markdown(
+                f"""
+                <div class="action-panel">
+                  <div class="action-panel-title">{'閱讀入口' if language == 'zh' else 'Read note'}</div>
+                  <div class="action-panel-copy">{"進入單篇頁面查看完整內容與附圖。" if language == "zh" else "Open the full post with the complete article body and assets."}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            if st.button("閱讀全文" if language == "zh" else "Read full note", key=f"note-{note.slug}", use_container_width=True):
+                open_note(note.slug)
 
 
 def render_about_page(site_content: dict, language: str) -> None:
     about = site_content["about"]
+    contact = site_content["contact"]
     section_heading(
         get_text(about["sectionLabel"], language),
         get_text(about["title"], language),
@@ -805,24 +866,43 @@ def render_about_page(site_content: dict, language: str) -> None:
     )
     left, right = st.columns([1.1, 0.9], gap="large")
     with left:
-        for paragraph in about["paragraphs"]:
-            st.markdown(f'<p class="muted">{get_text(paragraph, language)}</p>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div class="article-shell about-shell">
+            """
+            + "".join(
+                f'<p class="about-paragraph">{get_text(paragraph, language)}</p>' for paragraph in about["paragraphs"]
+            )
+            + """
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
     with right:
         for focus in about["focuses"]:
             st.markdown(
                 f"""
-                <div class="feature-card" style="margin-bottom: 0.9rem;">
+                <div class="feature-card focus-card">
+                  <div class="card-meta-label">{'Good fit' if language == 'en' else '適合案型'}</div>
                   <div class="about-title">{get_text(focus, language)}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
         st.markdown(
-            """
+            f"""
             <div class="link-card">
-              <div class="about-title">Contact</div>
-              <div class="muted">GitHub / LinkedIn / live demos are linked from the home page for fast review.</div>
+              <div class="card-meta-label">{'Contact' if language == 'en' else '聯絡入口'}</div>
+              <div class="about-title">{'快速查看背景與作品' if language == 'zh' else 'Quick links for profile and demos'}</div>
+              <div class="contact-link-copy">{"如果你想快速確認合作背景或直接看案例，下面這些入口會最直接。" if language == "zh" else "If you want to review background or jump straight into examples, these are the fastest entry points."}</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
+        for group in contact["groups"]:
+            for item in group["items"]:
+                st.link_button(
+                    f'{get_text(item["label"], language)} | {get_text(item["description"], language)}',
+                    item["href"],
+                    use_container_width=True,
+                )
