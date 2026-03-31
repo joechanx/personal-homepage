@@ -515,17 +515,17 @@ def render_home_page(
     services = site_content["services"]
     hero_stats = [
         (
-            "Featured Work",
+            "精選案例" if language == "zh" else "Case studies",
             f"{len(site_content['projects']):02d}",
             "精選案例" if language == "zh" else "featured case studies",
         ),
         (
-            "Published Notes",
+            "公開筆記" if language == "zh" else "Published notes",
             f"{len(notes):02d}",
             "公開技術筆記" if language == "zh" else "published notes",
         ),
         (
-            "Primary Focus",
+            "核心方向" if language == "zh" else "Core focus",
             "API + Auto",
             "串接與流程整理" if language == "zh" else "integration and workflow cleanup",
         ),
@@ -651,7 +651,7 @@ def render_home_page(
             st.markdown(
                 f"""
                 <div class="feature-card">
-                  <div class="card-label">{'Why it matters' if language == 'en' else 'Why it matters'}</div>
+                  <div class="card-label">{'值得注意' if language == 'zh' else 'Why it matters'}</div>
                   <div class="feature-title">{get_text(highlight["title"], language)}</div>
                   <div class="muted">{get_text(highlight["description"], language)}</div>
                 </div>
@@ -732,7 +732,7 @@ def render_home_page(
             st.markdown(
                 f"""
                 <div class="link-card">
-                  <div class="card-meta-label">{'Link Group' if language == 'en' else 'Link Group'}</div>
+                  <div class="card-meta-label">{'連結分類' if language == 'zh' else 'Link group'}</div>
                   <div class="about-title">{get_text(group["title"], language)}</div>
                   <div class="link-card-stat">{len(group["items"]):02d}</div>
                   <div class="muted">{len(group["items"])} {"個入口" if language == "zh" else "entry points"}</div>
@@ -765,17 +765,17 @@ def render_projects_page(site_content: dict, language: str) -> None:
     render_page_strip(
         [
             (
-                "Projects",
+                "案例數量" if language == "zh" else "Case studies",
                 f"{len(site_content['projects']):02d}",
                 "目前公開展示的案例數" if language == "zh" else "public case studies currently shown",
             ),
             (
-                "Delivery Lens",
+                "合作重點" if language == "zh" else "Focus",
                 "API + Automation",
                 "以可交付與可維護為主" if language == "zh" else "delivery and maintainability first",
             ),
             (
-                "Review Mode",
+                "查看方式" if language == "zh" else "Review",
                 "Code / Demo",
                 "可以同時看原始碼與成果" if language == "zh" else "review both source code and live output",
             ),
@@ -804,7 +804,7 @@ def render_projects_page(site_content: dict, language: str) -> None:
             st.markdown(
                 f"""
                 <div class="action-panel">
-                  <div class="action-panel-title">{'專案入口' if language == 'zh' else 'Project links'}</div>
+                  <div class="action-panel-title">{'專案入口' if language == 'zh' else 'Available links'}</div>
                   <div class="action-panel-copy">{"可直接查看原始碼與線上展示。" if language == "zh" else "Jump straight into the source code or live demo."}</div>
                 </div>
                 """,
@@ -866,17 +866,17 @@ def render_notes_page(
     render_page_strip(
         [
             (
-                "Published Notes",
+                "文章數量" if language == "zh" else "Articles",
                 f"{len(notes):02d}",
                 "目前可瀏覽的文章數量" if language == "zh" else "articles currently available",
             ),
             (
-                "Topics",
+                "主題標籤" if language == "zh" else "Topics",
                 f"{len(tags):02d}",
                 "可用標籤數量" if language == "zh" else "available tag filters",
             ),
             (
-                "Source",
+                "內容來源" if language == "zh" else "Workflow",
                 "Obsidian",
                 "由發布流程同步進網站" if language == "zh" else "synced in through the publishing workflow",
             ),
@@ -944,7 +944,7 @@ def render_notes_page(
             st.markdown(
                 f"""
                 <div class="action-panel">
-                  <div class="action-panel-title">{'閱讀入口' if language == 'zh' else 'Read note'}</div>
+                  <div class="action-panel-title">{'閱讀入口' if language == 'zh' else 'Open article'}</div>
                   <div class="action-panel-copy">{"進入單篇頁面查看完整內容與附圖。" if language == "zh" else "Open the full post with the complete article body and assets."}</div>
                 </div>
                 """,

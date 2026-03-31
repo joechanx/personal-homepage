@@ -76,7 +76,7 @@ SITE_CONTENT = {
         ],
         "profileLinksTitle": {
             "zh": "快速認識我",
-            "en": "Start here",
+            "en": "Profile links",
         },
         "demoLinksTitle": {
             "zh": "直接看作品",
@@ -272,7 +272,7 @@ SITE_CONTENT = {
         ],
     },
     "contact": {
-        "title": {"zh": "連結入口", "en": "Start here"},
+        "title": {"zh": "連結入口", "en": "Quick links"},
         "heading": {"zh": "個人頁面與作品入口", "en": "Profile and demo links"},
         "description": {
             "zh": "先從 GitHub、LinkedIn 與作品入口快速認識背景，再用文章內容了解實作細節與技術判斷。",
