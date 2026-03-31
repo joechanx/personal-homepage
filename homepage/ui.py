@@ -48,7 +48,6 @@ def inject_global_styles() -> None:
           margin-top: 1.7rem;
           margin-bottom: 1rem;
         }
-        .panel,
         .feature-card,
         .project-card,
         .note-card,
@@ -59,7 +58,6 @@ def inject_global_styles() -> None:
           border-radius: 24px;
           box-shadow: 0 16px 42px rgba(16, 32, 51, 0.07);
         }
-        .panel,
         .feature-card,
         .project-card,
         .note-card,
@@ -70,24 +68,14 @@ def inject_global_styles() -> None:
         .article-shell {
           padding: 1.7rem;
         }
-        .hero-panel {
+        .hero-shell {
           padding: 1.85rem;
+          border-radius: 30px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          box-shadow: 0 16px 42px rgba(16, 32, 51, 0.07);
           background:
             radial-gradient(circle at top right, rgba(38, 86, 156, 0.12) 0%, rgba(38, 86, 156, 0.02) 36%, rgba(255, 255, 255, 0.9) 72%),
             linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 249, 255, 0.96) 100%);
-          position: relative;
-          overflow: hidden;
-        }
-        .hero-panel:before {
-          content: "";
-          position: absolute;
-          width: 240px;
-          height: 240px;
-          border-radius: 999px;
-          background: radial-gradient(circle, rgba(27, 73, 145, 0.14) 0%, rgba(27, 73, 145, 0.02) 68%, rgba(27, 73, 145, 0) 100%);
-          top: -70px;
-          right: -55px;
-          pointer-events: none;
         }
         .eyebrow,
         .card-label {
@@ -109,6 +97,14 @@ def inject_global_styles() -> None:
           letter-spacing: 0.05em;
           text-transform: uppercase;
           margin-top: 0.8rem;
+        }
+        .hero-lead {
+          color: #36598f;
+          font-size: 0.96rem;
+          font-weight: 700;
+          line-height: 1.65;
+          margin-top: 1rem;
+          max-width: 58ch;
         }
         .hero-title {
           font-size: clamp(2rem, 2.8vw, 3.05rem);
@@ -158,6 +154,38 @@ def inject_global_styles() -> None:
           gap: 0.55rem;
           margin-top: 0.95rem;
         }
+        .skill-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.85rem;
+          margin-top: 1.15rem;
+        }
+        .skill-card {
+          border-radius: 20px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          background: rgba(255, 255, 255, 0.82);
+          padding: 1rem 1rem 1.05rem;
+        }
+        .skill-card-kicker {
+          color: #6b7790;
+          font-size: 0.74rem;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .skill-card-title {
+          color: #102033;
+          font-size: 0.98rem;
+          font-weight: 800;
+          line-height: 1.5;
+          margin-top: 0.3rem;
+        }
+        .skill-card-description {
+          color: #5a677b;
+          font-size: 0.88rem;
+          line-height: 1.6;
+          margin-top: 0.45rem;
+        }
         .tag-chip,
         .stack-badge,
         .meta-pill {
@@ -200,6 +228,25 @@ def inject_global_styles() -> None:
           margin-top: 0.2rem;
           line-height: 1.5;
         }
+        .cta-shell {
+          margin-top: 1.2rem;
+          border-radius: 24px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          background: rgba(255, 255, 255, 0.75);
+          padding: 1rem 1rem 0.8rem;
+        }
+        .cta-title {
+          color: #102033;
+          font-size: 0.95rem;
+          font-weight: 800;
+          margin-bottom: 0.1rem;
+        }
+        .cta-note {
+          color: #5a677b;
+          font-size: 0.85rem;
+          line-height: 1.55;
+          margin-bottom: 0.7rem;
+        }
         .note-meta {
           color: #6c778b;
           font-size: 0.85rem;
@@ -223,20 +270,6 @@ def inject_global_styles() -> None:
           background: rgba(255, 255, 255, 0.68);
           color: #5d6c82;
         }
-        .photo-frame {
-          background:
-            linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(236, 243, 251, 0.98) 100%);
-          border: 1px solid rgba(214, 223, 236, 0.95);
-          border-radius: 30px;
-          box-shadow: 0 20px 50px rgba(16, 32, 51, 0.1);
-          padding: 0.95rem;
-        }
-        .photo-caption {
-          color: #5d6c82;
-          font-size: 0.84rem;
-          line-height: 1.6;
-          margin-top: 0.85rem;
-        }
         .note-inline-image {
           width: 100%;
           border-radius: 18px;
@@ -259,8 +292,12 @@ def inject_global_styles() -> None:
           border-radius: 24px;
           min-height: 100%;
           object-fit: cover;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          box-shadow: 0 20px 50px rgba(16, 32, 51, 0.1);
+          background: rgba(255, 255, 255, 0.95);
         }
         @media (max-width: 900px) {
+          .skill-grid,
           .proof-grid {
             grid-template-columns: 1fr;
           }
@@ -327,27 +364,38 @@ def render_home_page(
     left, right = st.columns([1.12, 0.88], gap="large")
 
     with left:
-        st.markdown('<div class="panel hero-panel">', unsafe_allow_html=True)
-        st.markdown(f'<div class="eyebrow">{get_text(profile["badge"], language)}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="hero-name">{profile["name"]}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="hero-title">{get_text(profile["role"], language)}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="hero-summary">{get_text(profile["summary"], language)}</div>', unsafe_allow_html=True)
-        st.markdown('<div class="tag-row">', unsafe_allow_html=True)
-        for point in profile["points"]:
-            st.markdown(f'<span class="tag-chip">{get_text(point, language)}</span>', unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown('<div class="meta-row">', unsafe_allow_html=True)
         st.markdown(
-            f'<span class="meta-pill">{get_text(profile["locationLabel"], language)}: {profile["location"]}</span>',
+            f"""
+            <div class="hero-shell">
+              <div class="eyebrow">{get_text(profile["badge"], language)}</div>
+              <div class="hero-name">{profile["name"]}</div>
+              <div class="hero-lead">{get_text(profile["heroLead"], language)}</div>
+              <div class="hero-title">{get_text(profile["role"], language)}</div>
+              <div class="hero-summary">{get_text(profile["summary"], language)}</div>
+              <div class="skill-grid">
+                {"".join(
+                    f'''
+                    <div class="skill-card">
+                      <div class="skill-card-kicker">{item["title"]["en"].upper()}</div>
+                      <div class="skill-card-title">{get_text(item["title"], language)}</div>
+                      <div class="skill-card-description">{get_text(item["description"], language)}</div>
+                    </div>
+                    '''
+                    for item in profile["focusCards"]
+                )}
+              </div>
+              <div class="meta-row">
+                <span class="meta-pill">{get_text(profile["locationLabel"], language)}: {profile["location"]}</span>
+                <span class="meta-pill">{get_text(profile["workType"], language)}</span>
+              </div>
+              <div class="stack-row">
+                {"".join(f"<span class='stack-badge'>{badge}</span>" for badge in profile["heroBadges"])}
+              </div>
+              <p class="muted">{get_text(profile["availability"], language)}</p>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
-        st.markdown(f'<span class="meta-pill">{get_text(profile["workType"], language)}</span>', unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown('<div class="stack-row">', unsafe_allow_html=True)
-        for badge in profile["heroBadges"]:
-            st.markdown(f'<span class="stack-badge">{badge}</span>', unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown(f'<p class="muted">{get_text(profile["availability"], language)}</p>', unsafe_allow_html=True)
         st.markdown(
             "<div class='proof-grid'>"
             + "".join(
@@ -363,9 +411,17 @@ def render_home_page(
             + "</div>",
             unsafe_allow_html=True,
         )
-        links_left, links_right = st.columns(2, gap="medium")
-        with links_left:
-            st.caption(get_text(profile["profileLinksTitle"], language))
+        cta_left, cta_right = st.columns(2, gap="medium")
+        with cta_left:
+            st.markdown(
+                f"""
+                <div class="cta-shell">
+                  <div class="cta-title">{get_text(profile["profileLinksTitle"], language)}</div>
+                  <div class="cta-note">{"先從背景與公開程式碼快速了解我。" if language == "zh" else "Start with background and public code for a quick overview."}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
             for item in profile["profileLinks"]:
                 st.link_button(
                     get_text(item["label"], language),
@@ -373,8 +429,16 @@ def render_home_page(
                     use_container_width=True,
                     type="primary" if item.get("primary") else "secondary",
                 )
-        with links_right:
-            st.caption(get_text(profile["demoLinksTitle"], language))
+        with cta_right:
+            st.markdown(
+                f"""
+                <div class="cta-shell">
+                  <div class="cta-title">{get_text(profile["demoLinksTitle"], language)}</div>
+                  <div class="cta-note">{"如果你想先看可操作成果，直接從這裡進入。" if language == "zh" else "If you want to see working examples first, start here."}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
             for item in profile["demoLinks"]:
                 st.link_button(
                     get_text(item["label"], language),
@@ -382,15 +446,8 @@ def render_home_page(
                     use_container_width=True,
                     type="primary" if item.get("primary") else "secondary",
                 )
-        st.markdown("</div>", unsafe_allow_html=True)
     with right:
-        st.markdown('<div class="photo-frame">', unsafe_allow_html=True)
         st.image(str(profile_image), use_container_width=True)
-        st.markdown(
-            f'<div class="photo-caption">{"用作品與筆記一起說明技術判斷，讓首頁不只是名片，而是一個可持續累積的內容入口。" if language == "zh" else "Projects and notes work together here so the site feels less like a business card and more like a growing editorial portfolio."}</div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
 
     section_heading(
         services["eyebrow"][language],
@@ -658,10 +715,8 @@ def render_about_page(site_content: dict, language: str) -> None:
     )
     left, right = st.columns([1.1, 0.9], gap="large")
     with left:
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
         for paragraph in about["paragraphs"]:
             st.markdown(f'<p class="muted">{get_text(paragraph, language)}</p>', unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
     with right:
         for focus in about["focuses"]:
             st.markdown(

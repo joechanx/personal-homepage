@@ -11,26 +11,48 @@ SITE_CONTENT = {
             "zh": "Editorial Portfolio / Streamlit",
             "en": "Editorial Portfolio / Streamlit",
         },
+        "heroLead": {
+            "zh": "為需要 API 整合、自動化流程與可交付內容的團隊提供實作支援。",
+            "en": "Implementation support for teams that need API integration, automation workflows, and deliverable technical content.",
+        },
         "role": {
-            "zh": "Python 整合、自動化與內容型產品工程師",
-            "en": "Python integration, automation, and content-driven product engineer",
+            "zh": "Python 整合與自動化工程師",
+            "en": "Python integration and automation engineer",
         },
         "summary": {
-            "zh": "我協助把 API 串接、自動化流程與資料工作流整理成可交付的系統，並把案例與技術思路轉成可閱讀的內容，讓合作方更快理解我能落地的能力。",
-            "en": "I help turn API integrations, automation workflows, and data pipelines into deliverable systems, then package the work into readable case studies and technical notes.",
+            "zh": "我把 API 串接、自動化流程與資料工作流整理成可落地的系統，並用案例與筆記清楚說明我如何拆解問題與交付成果。",
+            "en": "I turn API integrations, automation workflows, and data pipelines into deliverable systems, then explain the work through case studies and technical notes.",
         },
-        "points": [
+        "focusCards": [
             {
-                "zh": "API 串接、Webhook 與流程整合",
-                "en": "API integrations, webhooks, and workflow design",
+                "title": {
+                    "zh": "API 整合",
+                    "en": "API integration",
+                },
+                "description": {
+                    "zh": "第三方服務串接、欄位 mapping 與 webhook 流程整理。",
+                    "en": "Third-party integrations, field mapping, and webhook flow design.",
+                },
             },
             {
-                "zh": "Python 自動化、資料處理與內部工具流程",
-                "en": "Python automation, data processing, and internal workflow tooling",
+                "title": {
+                    "zh": "自動化流程",
+                    "en": "Automation workflow",
+                },
+                "description": {
+                    "zh": "將重複性作業整理成腳本、批次流程與可維護的工具。",
+                    "en": "Turn repetitive tasks into scripts, batch jobs, and maintainable tooling.",
+                },
             },
             {
-                "zh": "用案例與技術筆記建立信任感",
-                "en": "Build trust with case studies and technical notes",
+                "title": {
+                    "zh": "案例與內容",
+                    "en": "Cases and content",
+                },
+                "description": {
+                    "zh": "用作品拆解與技術筆記讓合作方快速理解你的判斷與做法。",
+                    "en": "Use case studies and notes to make your decisions and implementation style easy to evaluate.",
+                },
             },
         ],
         "availability": {
@@ -53,12 +75,12 @@ SITE_CONTENT = {
             "Knowledge Publishing",
         ],
         "profileLinksTitle": {
-            "zh": "個人頁面",
-            "en": "Profile",
+            "zh": "快速認識我",
+            "en": "Start here",
         },
         "demoLinksTitle": {
-            "zh": "作品入口",
-            "en": "Live demos",
+            "zh": "直接看作品",
+            "en": "See the work",
         },
         "profileLinks": [
             {
