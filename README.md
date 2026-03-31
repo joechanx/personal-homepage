@@ -1,140 +1,164 @@
 # personal-homepage
 
-A bilingual React personal homepage for **Dexter Chang**, prepared for:
+此專案已重構為以 `Streamlit` 驅動的個人品牌網站，定位為：
 
-- GitHub source control
-- Railway deployment
-- future expansion into a fuller freelance portfolio site
+- 個人首頁
+- 作品展示入口
+- 技術筆記與知識內容平台
+- 從 Obsidian 發布資料夾同步內容的網站骨架
 
-此專案是為 **Dexter Chang** 製作的中英雙語 React 個人首頁，已整理成適合：
+## 目前功能
 
-- 放到 GitHub 管理版本
-- 部署到 Railway
-- 後續持續擴充成完整接案型作品網站
-
-## Current Features / 目前內容
-
-- bilingual Chinese / English toggle
-- personal photo hero section
-- profile intro and service focus
-- featured GitHub + live demo links
-- reusable component structure
-- content stored in a single data file for easy editing
-- Dockerfile + Caddyfile ready for Railway
+- 中英雙語首頁內容切換
+- `Home / Projects / Notes / About` 頂部 navigation
+- Hero / Services / Featured Projects / Latest Notes / About 區塊
+- 筆記列表、搜尋、標籤篩選與文章詳頁
+- Markdown + frontmatter 筆記格式
+- 支援 Obsidian 常見 `[[wikilink]]` 與 `![[image.png]]`
+- Obsidian 發布資料夾同步腳本
+- Railway 可用的 Python + Docker 部署流程
 
 ## Tech Stack
 
-- React
-- Vite
-- plain CSS
-- Caddy (for production static serving in Railway)
-- Docker multi-stage build
+- Python 3.12
+- Streamlit
+- Markdown/frontmatter content workflow
+- Docker
+- Railway
 
-## Project Name
-
-This repo is set to:
+## 本機啟動
 
 ```bash
-personal-homepage
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\streamlit run app.py
 ```
 
-## Local Development
+若你還沒有虛擬環境：
 
 ```bash
-npm install
-npm run dev
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\streamlit run app.py
 ```
 
-## Production Build
+## 主要可編輯位置
+
+### 1. 首頁與作品文案
 
 ```bash
-npm run build
-npm run preview
+content/site_content.py
 ```
 
-## Deploy to Railway from GitHub
+適合修改：
 
-1. Push this project to a GitHub repository.
-2. In Railway, create a new project.
-3. Choose **Deploy from GitHub repo**.
-4. Select this repository.
-5. Wait for the build and deployment to finish.
-6. In the Railway service settings, generate a public domain.
+- 個人介紹
+- 服務內容
+- 作品展示
+- About 文案
+- 外部連結
 
-This project already includes:
-
-- `Dockerfile`
-- `Caddyfile`
-- `.dockerignore`
-- `.gitignore`
-
-so the deployment setup is already prepared.
-
-## Recommended Files to Edit First
-
-### 1. Main content / 主要文案
+### 2. 筆記內容
 
 ```bash
-src/data/siteContent.js
+content/notes/
 ```
 
-Edit here when you want to update:
+每篇筆記使用 Markdown，支援 frontmatter：
 
-- intro text
-- project cards
-- links
-- service descriptions
-- navigation labels
+```md
+---
+title: Example note
+summary: 這篇文章的摘要
+date: 2026-04-01
+slug: example-note
+lang: zh
+tags:
+  - api
+  - automation
+draft: false
+---
+```
 
-### 2. Photo / 照片
+必要欄位建議至少包含：
+
+- `title`
+- `summary`
+- `date`
+
+可選欄位：
+
+- `slug`
+- `lang`
+- `tags`
+- `draft`
+
+## Obsidian 同步方式
+
+建議你在 Obsidian vault 中準備一個專門的發布資料夾，例如：
 
 ```bash
-public/profile.jpg
+publish/
 ```
 
-### 3. Metadata / 網頁標題與描述
+然後執行：
 
 ```bash
-index.html
+.venv\Scripts\python.exe scripts\sync_obsidian_notes.py "C:\path\to\your\vault\publish" --clean
 ```
 
-## Project Structure
+這會把：
+
+- Markdown 筆記複製到 `content/notes/`
+- 圖片與附件複製到 `static/notes/`
+
+### 發布建議
+
+- 只同步你整理過、確定可公開的內容
+- 草稿請保留在 vault 的非發布資料夾
+- 若文章不想上站，可加 `draft: true`
+
+## Railway 部署
+
+這個專案現在使用 Python Docker image 啟動 `Streamlit`：
+
+```bash
+streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+```
+
+部署步驟：
+
+1. Push 到 GitHub。
+2. 在 Railway 建立新專案。
+3. 選擇從 GitHub repo 部署。
+4. Railway 會使用 repo 內的 `Dockerfile` 建置。
+5. 建立公開網域後即可瀏覽。
+
+## 專案結構
 
 ```bash
 personal-homepage/
+├─ app.py
+├─ content/
+│  ├─ site_content.py
+│  └─ notes/
+├─ homepage/
+│  ├─ content_loader.py
+│  ├─ note_loader.py
+│  └─ ui.py
 ├─ public/
-│  ├─ favicon.svg
 │  └─ profile.jpg
-├─ src/
-│  ├─ components/
-│  ├─ data/
-│  │  └─ siteContent.js
-│  ├─ App.jsx
-│  ├─ main.jsx
-│  └─ styles.css
-├─ Caddyfile
+├─ scripts/
+│  └─ sync_obsidian_notes.py
+├─ static/
+│  └─ notes/
+├─ .streamlit/
+│  └─ config.toml
 ├─ Dockerfile
-├─ .dockerignore
-├─ .gitignore
-├─ index.html
-├─ package.json
-└─ vite.config.js
+├─ requirements.txt
+└─ README.md
 ```
-
-## Suggested Next Sections
-
-You can extend this site later with:
-
-- services page
-- resume download section
-- contact form
-- testimonials
-- case studies
-- FAQ
-- pricing or engagement flow
 
 ## Notes
 
-- No license file is included by default.
-- If you want to open-source this repo later, add a license intentionally.
-- If you want to use a custom domain on Railway, connect the domain after deployment.
+- 目前正式入口為 `app.py`。
+- 若未來更重視 SEO、複雜路由與更高程度的品牌客製前端，可再評估改為 Astro 或 Next.js。

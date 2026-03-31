@@ -1,0 +1,683 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+import streamlit as st
+
+from homepage.content_loader import get_text
+from homepage.note_loader import Note
+
+
+def inject_global_styles() -> None:
+    st.markdown(
+        """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;800&display=swap');
+
+        .stApp {
+          background:
+            radial-gradient(circle at top left, rgba(255, 255, 255, 0.96) 0%, rgba(239, 244, 250, 0.92) 35%, rgba(227, 235, 246, 0.95) 100%),
+            linear-gradient(180deg, #f8fbff 0%, #eef3f9 100%);
+          color: #102033;
+          font-family: "Manrope", "Noto Sans TC", "Segoe UI", sans-serif;
+        }
+        .block-container {
+          max-width: 1180px;
+          padding-top: 1.1rem;
+          padding-bottom: 4.8rem;
+        }
+        .site-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: end;
+          gap: 1rem;
+          margin-bottom: 0.35rem;
+        }
+        .site-title {
+          font-size: 1.08rem;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .site-subtitle {
+          color: #5e6e84;
+          margin-top: 0.15rem;
+          font-size: 0.9rem;
+        }
+        .section-shell {
+          margin-top: 1.7rem;
+          margin-bottom: 1rem;
+        }
+        .panel,
+        .feature-card,
+        .project-card,
+        .note-card,
+        .link-card,
+        .article-shell {
+          background: rgba(255, 255, 255, 0.88);
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          border-radius: 24px;
+          box-shadow: 0 16px 42px rgba(16, 32, 51, 0.07);
+        }
+        .panel,
+        .feature-card,
+        .project-card,
+        .note-card,
+        .link-card {
+          padding: 1.3rem;
+          min-height: 100%;
+        }
+        .article-shell {
+          padding: 1.7rem;
+        }
+        .hero-panel {
+          padding: 1.85rem;
+          background:
+            radial-gradient(circle at top right, rgba(38, 86, 156, 0.12) 0%, rgba(38, 86, 156, 0.02) 36%, rgba(255, 255, 255, 0.9) 72%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 249, 255, 0.96) 100%);
+          position: relative;
+          overflow: hidden;
+        }
+        .hero-panel:before {
+          content: "";
+          position: absolute;
+          width: 240px;
+          height: 240px;
+          border-radius: 999px;
+          background: radial-gradient(circle, rgba(27, 73, 145, 0.14) 0%, rgba(27, 73, 145, 0.02) 68%, rgba(27, 73, 145, 0) 100%);
+          top: -70px;
+          right: -55px;
+          pointer-events: none;
+        }
+        .eyebrow,
+        .card-label {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          background: #e9f1ff;
+          color: #1e4ea7;
+          font-size: 0.78rem;
+          font-weight: 800;
+          letter-spacing: 0.03em;
+          padding: 0.42rem 0.8rem;
+        }
+        .hero-name {
+          font-size: 0.94rem;
+          color: #5d6c82;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          margin-top: 0.8rem;
+        }
+        .hero-title {
+          font-size: clamp(2rem, 2.8vw, 3.05rem);
+          font-family: "Fraunces", "Noto Sans TC", serif;
+          font-weight: 700;
+          line-height: 1.04;
+          margin-top: 0.35rem;
+          letter-spacing: -0.03em;
+        }
+        .section-title {
+          font-size: clamp(1.55rem, 2.1vw, 2.25rem);
+          font-family: "Fraunces", "Noto Sans TC", serif;
+          font-weight: 700;
+          line-height: 1.14;
+          margin-top: 0.55rem;
+          letter-spacing: -0.02em;
+        }
+        .section-subtitle,
+        .muted,
+        .hero-summary,
+        .article-summary {
+          color: #5a677b;
+          line-height: 1.72;
+        }
+        .hero-summary {
+          max-width: 60ch;
+          font-size: 1rem;
+          margin-top: 0.9rem;
+        }
+        .feature-title,
+        .project-title,
+        .note-title,
+        .about-title {
+          font-size: 1.08rem;
+          font-weight: 800;
+          margin: 0.75rem 0 0.45rem;
+        }
+        .project-title,
+        .note-title {
+          font-size: 1.14rem;
+        }
+        .tag-row,
+        .stack-row,
+        .meta-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.55rem;
+          margin-top: 0.95rem;
+        }
+        .tag-chip,
+        .stack-badge,
+        .meta-pill {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 999px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          background: rgba(255, 255, 255, 0.9);
+          padding: 0.42rem 0.76rem;
+          font-size: 0.84rem;
+        }
+        .proof-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.8rem;
+          margin-top: 1.2rem;
+        }
+        .proof-card {
+          border-radius: 18px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          background: rgba(255, 255, 255, 0.84);
+          padding: 0.9rem 1rem;
+        }
+        .proof-label {
+          color: #6b7790;
+          font-size: 0.78rem;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+        }
+        .proof-value {
+          color: #102033;
+          font-size: 1.45rem;
+          font-weight: 800;
+          margin-top: 0.25rem;
+        }
+        .proof-note {
+          color: #5a677b;
+          font-size: 0.84rem;
+          margin-top: 0.2rem;
+          line-height: 1.5;
+        }
+        .note-meta {
+          color: #6c778b;
+          font-size: 0.85rem;
+          margin-top: 0.45rem;
+        }
+        .article-title {
+          font-size: clamp(1.9rem, 2.5vw, 2.65rem);
+          font-weight: 800;
+          line-height: 1.1;
+          margin-top: 0.7rem;
+        }
+        .article-divider {
+          height: 1px;
+          background: rgba(221, 229, 240, 1);
+          margin: 1.1rem 0 1.3rem;
+        }
+        .empty-state {
+          padding: 1.15rem;
+          border-radius: 20px;
+          border: 1px dashed rgba(176, 188, 205, 1);
+          background: rgba(255, 255, 255, 0.68);
+          color: #5d6c82;
+        }
+        .photo-frame {
+          background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(236, 243, 251, 0.98) 100%);
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          border-radius: 30px;
+          box-shadow: 0 20px 50px rgba(16, 32, 51, 0.1);
+          padding: 0.95rem;
+        }
+        .photo-caption {
+          color: #5d6c82;
+          font-size: 0.84rem;
+          line-height: 1.6;
+          margin-top: 0.85rem;
+        }
+        .note-inline-image {
+          width: 100%;
+          border-radius: 18px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+        }
+        .note-image-shell {
+          margin: 1rem 0;
+        }
+        div[data-testid="stVerticalBlock"] div[data-testid="stButton"] > button {
+          border-radius: 999px;
+          min-height: 2.9rem;
+          font-weight: 700;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+        }
+        div[data-testid="stLinkButton"] a {
+          border-radius: 999px !important;
+          font-weight: 700 !important;
+        }
+        div[data-testid="stImage"] img {
+          border-radius: 24px;
+          min-height: 100%;
+          object-fit: cover;
+        }
+        @media (max-width: 900px) {
+          .proof-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def section_heading(eyebrow: str, title: str, subtitle: str) -> None:
+    st.markdown(
+        f"""
+        <div class="section-shell">
+          <div class="eyebrow">{eyebrow}</div>
+          <div class="section-title">{title}</div>
+          <div class="section-subtitle">{subtitle}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_site_header(name: str, role: str) -> None:
+    st.markdown(
+        f"""
+        <div class="site-header">
+          <div>
+            <div class="site-title">{name}</div>
+            <div class="site-subtitle">{role}</div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_home_page(
+    site_content: dict,
+    notes: list[Note],
+    language: str,
+    profile_image: Path,
+    open_note,
+) -> None:
+    profile = site_content["profile"]
+    services = site_content["services"]
+    hero_stats = [
+        (
+            "Projects",
+            f"{len(site_content['projects']):02d}",
+            "精選案例入口" if language == "zh" else "featured case studies",
+        ),
+        (
+            "Notes",
+            f"{len(notes):02d}",
+            "公開技術筆記" if language == "zh" else "published notes",
+        ),
+        (
+            "Focus",
+            "API",
+            "integration + automation" if language == "en" else "integration + automation",
+        ),
+    ]
+    left, right = st.columns([1.12, 0.88], gap="large")
+
+    with left:
+        st.markdown('<div class="panel hero-panel">', unsafe_allow_html=True)
+        st.markdown(f'<div class="eyebrow">{get_text(profile["badge"], language)}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="hero-name">{profile["name"]}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="hero-title">{get_text(profile["role"], language)}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="hero-summary">{get_text(profile["summary"], language)}</div>', unsafe_allow_html=True)
+        st.markdown('<div class="tag-row">', unsafe_allow_html=True)
+        for point in profile["points"]:
+            st.markdown(f'<span class="tag-chip">{get_text(point, language)}</span>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('<div class="meta-row">', unsafe_allow_html=True)
+        st.markdown(
+            f'<span class="meta-pill">{get_text(profile["locationLabel"], language)}: {profile["location"]}</span>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(f'<span class="meta-pill">{get_text(profile["workType"], language)}</span>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('<div class="stack-row">', unsafe_allow_html=True)
+        for badge in profile["heroBadges"]:
+            st.markdown(f'<span class="stack-badge">{badge}</span>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown(f'<p class="muted">{get_text(profile["availability"], language)}</p>', unsafe_allow_html=True)
+        st.markdown(
+            "<div class='proof-grid'>"
+            + "".join(
+                f"""
+                <div class="proof-card">
+                  <div class="proof-label">{label}</div>
+                  <div class="proof-value">{value}</div>
+                  <div class="proof-note">{note}</div>
+                </div>
+                """
+                for label, value, note in hero_stats
+            )
+            + "</div>",
+            unsafe_allow_html=True,
+        )
+        links_left, links_right = st.columns(2, gap="medium")
+        with links_left:
+            st.caption(get_text(profile["profileLinksTitle"], language))
+            for item in profile["profileLinks"]:
+                st.link_button(
+                    get_text(item["label"], language),
+                    item["href"],
+                    use_container_width=True,
+                    type="primary" if item.get("primary") else "secondary",
+                )
+        with links_right:
+            st.caption(get_text(profile["demoLinksTitle"], language))
+            for item in profile["demoLinks"]:
+                st.link_button(
+                    get_text(item["label"], language),
+                    item["href"],
+                    use_container_width=True,
+                    type="primary" if item.get("primary") else "secondary",
+                )
+        st.markdown("</div>", unsafe_allow_html=True)
+    with right:
+        st.markdown('<div class="photo-frame">', unsafe_allow_html=True)
+        st.image(str(profile_image), use_container_width=True)
+        st.markdown(
+            f'<div class="photo-caption">{"用作品與筆記一起說明技術判斷，讓首頁不只是名片，而是一個可持續累積的內容入口。" if language == "zh" else "Projects and notes work together here so the site feels less like a business card and more like a growing editorial portfolio."}</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    section_heading(
+        services["eyebrow"][language],
+        services["title"][language],
+        services["subtitle"][language],
+    )
+    service_columns = st.columns(3, gap="medium")
+    for column, item in zip(service_columns, services["items"], strict=False):
+        with column:
+            st.markdown(
+                f"""
+                <div class="feature-card">
+                  <div class="card-label">{item["number"]}</div>
+                  <div class="feature-title">{get_text(item["title"], language)}</div>
+                  <div class="muted">{get_text(item["description"], language)}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    section_heading(
+        "信任線索" if language == "zh" else "Signals of trust",
+        "作品與內容一起建立可驗證的可信度" if language == "zh" else "Projects and writing build credibility together",
+        "讓訪客快速看到你的做法、思路與交付方式，而不是只看到一串技術名詞。"
+        if language == "zh"
+        else "Let visitors see your implementation style, reasoning, and delivery mindset instead of just a list of technologies.",
+    )
+    highlight_columns = st.columns(3, gap="medium")
+    for column, highlight in zip(highlight_columns, site_content["highlights"], strict=False):
+        with column:
+            st.markdown(
+                f"""
+                <div class="feature-card">
+                  <div class="card-label">{'Why it matters' if language == 'en' else 'Why it matters'}</div>
+                  <div class="feature-title">{get_text(highlight["title"], language)}</div>
+                  <div class="muted">{get_text(highlight["description"], language)}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    section_heading(
+        "作品集" if language == "zh" else "Portfolio",
+        "精選展示專案" if language == "zh" else "Featured Projects",
+        "展示可交付、可擴充與可說明的實作能力"
+        if language == "zh"
+        else "Projects that show deliverable, explainable, and expandable implementation work.",
+    )
+    project_columns = st.columns(2, gap="medium")
+    for column, project in zip(project_columns, site_content["projects"], strict=False):
+        with column:
+            st.markdown(
+                f"""
+                <div class="project-card">
+                  <div class="card-label">{get_text(project["tag"], language)}</div>
+                  <div class="project-title">{get_text(project["title"], language)}</div>
+                  <div class="muted">{get_text(project["description"], language)}</div>
+                  <div class="note-meta">{'你的角色' if language == 'zh' else 'Role'}: {get_text(project["role"], language)}</div>
+                  <div class="stack-row">
+                    {"".join(f"<span class='stack-badge'>{item}</span>" for item in project["stack"])}
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            for link in project["links"]:
+                st.link_button(get_text(link["label"], language), link["href"], use_container_width=True)
+
+    section_heading(
+        "知識內容" if language == "zh" else "Knowledge",
+        "最新發布筆記" if language == "zh" else "Latest published notes",
+        "把實作經驗拆解成可閱讀、可分享的內容，讓合作方更快理解你的技術判斷。"
+        if language == "zh"
+        else "Turn implementation experience into readable notes that make your technical judgment easier to trust.",
+    )
+    if not notes:
+        st.markdown(
+            f'<div class="empty-state">{"目前還沒有公開筆記，可先執行同步腳本匯入 Obsidian 內容。" if language == "zh" else "No published notes yet. Run the sync script to import your curated Obsidian content."}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        note_columns = st.columns(min(3, len(notes)), gap="medium")
+        for column, note in zip(note_columns, notes, strict=False):
+            with column:
+                st.markdown(
+                    f"""
+                    <div class="note-card">
+                      <div class="card-label">{note.lang.upper()}</div>
+                      <div class="note-title">{note.title}</div>
+                      <div class="note-meta">{note.date.isoformat()}</div>
+                      <div class="muted">{note.summary}</div>
+                      <div class="stack-row">
+                        {"".join(f"<span class='tag-chip'>{tag}</span>" for tag in note.tags)}
+                      </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                if st.button("閱讀文章" if language == "zh" else "Read note", key=f"home-note-{note.slug}"):
+                    open_note(note.slug)
+
+    contact = site_content["contact"]
+    section_heading(
+        get_text(contact["title"], language),
+        get_text(contact["heading"], language),
+        get_text(contact["description"], language),
+    )
+    contact_columns = st.columns(2, gap="medium")
+    for column, group in zip(contact_columns, contact["groups"], strict=False):
+        with column:
+            st.markdown(
+                f"""
+                <div class="link-card">
+                  <div class="about-title">{get_text(group["title"], language)}</div>
+                  <div class="muted">{len(group["items"])} {"個入口" if language == "zh" else "entry points"}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            for item in group["items"]:
+                st.link_button(
+                    f'{get_text(item["label"], language)} | {get_text(item["description"], language)}',
+                    item["href"],
+                    use_container_width=True,
+                )
+
+
+def render_projects_page(site_content: dict, language: str) -> None:
+    section_heading(
+        "作品集" if language == "zh" else "Portfolio",
+        "案例與可交付成果" if language == "zh" else "Case studies and deliverable work",
+        "用案例說明你做了什麼、怎麼做，以及成果能如何延伸。"
+        if language == "zh"
+        else "Use projects to show what you built, how you approached it, and how the result can extend further.",
+    )
+    for project in site_content["projects"]:
+        left, right = st.columns([0.72, 0.28], gap="large")
+        with left:
+            st.markdown(
+                f"""
+                <div class="project-card">
+                  <div class="card-label">{get_text(project["tag"], language)}</div>
+                  <div class="project-title">{get_text(project["title"], language)}</div>
+                  <div class="muted">{get_text(project["description"], language)}</div>
+                  <div class="about-title">{'我的角色' if language == 'zh' else 'My role'}</div>
+                  <div class="muted">{get_text(project["role"], language)}</div>
+                  <div class="stack-row">
+                    {"".join(f"<span class='stack-badge'>{item}</span>" for item in project["stack"])}
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with right:
+            for item in project["links"]:
+                st.link_button(get_text(item["label"], language), item["href"], use_container_width=True)
+
+
+def render_notes_page(
+    site_content: dict,
+    notes: list[Note],
+    selected_note: Note | None,
+    language: str,
+    tags: list[str],
+    open_note,
+    clear_note,
+) -> None:
+    if selected_note:
+        st.markdown(
+            f"""
+            <div class="article-shell">
+              <div class="eyebrow">{selected_note.lang.upper()}</div>
+              <div class="article-title">{selected_note.title}</div>
+              <div class="note-meta">{selected_note.date.isoformat()}</div>
+              <div class="article-summary">{selected_note.summary}</div>
+              <div class="stack-row">
+                {"".join(f"<span class='tag-chip'>{tag}</span>" for tag in selected_note.tags)}
+              </div>
+              <div class="article-divider"></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        action_left, action_right, _ = st.columns([0.2, 0.2, 0.6])
+        with action_left:
+            if st.button("返回列表" if language == "zh" else "Back to list", use_container_width=True):
+                clear_note()
+        with action_right:
+            st.page_link("app.py", label="Home", icon=":material/home:")
+        st.markdown(selected_note.rendered_body, unsafe_allow_html=True)
+        return
+
+    section_heading(
+        "知識內容" if language == "zh" else "Knowledge",
+        "筆記與文章" if language == "zh" else "Notes and articles",
+        "整理來自 Obsidian 發布資料夾的內容，將實作經驗、工具流程與案例拆成可閱讀的文章。"
+        if language == "zh"
+        else "Published notes from your Obsidian workflow, covering implementation insights, tooling, and case-driven writeups.",
+    )
+
+    if not notes:
+        st.markdown(
+            f'<div class="empty-state">{"目前沒有可顯示的筆記，請先把整理好的內容同步到 content/notes。" if language == "zh" else "No notes are available yet. Sync your curated content into content/notes first."}</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    filter_left, filter_center, filter_right = st.columns([0.42, 0.26, 0.32])
+    with filter_left:
+        keyword = st.text_input("搜尋筆記" if language == "zh" else "Search notes", placeholder="API / automation / workflow")
+    with filter_center:
+        tag_label = "全部" if language == "zh" else "All"
+        selected_tag = st.selectbox("標籤" if language == "zh" else "Tag", options=[tag_label, *tags])
+    with filter_right:
+        order = st.selectbox(
+            "排序" if language == "zh" else "Sort",
+            options=["最新優先" if language == "zh" else "Newest first", "最舊優先" if language == "zh" else "Oldest first"],
+        )
+
+    filtered_notes = []
+    keyword_value = keyword.strip().lower()
+    tag_filter = "" if selected_tag == tag_label else selected_tag
+    for note in notes:
+        haystack = f"{note.title} {note.summary} {' '.join(note.tags)}".lower()
+        if keyword_value and keyword_value not in haystack:
+            continue
+        if tag_filter and tag_filter not in note.tags:
+            continue
+        filtered_notes.append(note)
+
+    filtered_notes.sort(key=lambda item: item.sort_key, reverse=order in {"最新優先", "Newest first"})
+
+    if not filtered_notes:
+        st.markdown(
+            f'<div class="empty-state">{"沒有符合條件的筆記，請調整搜尋字詞或標籤。" if language == "zh" else "No notes matched the current filters. Try adjusting the keyword or tag."}</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    for note in filtered_notes:
+        st.markdown(
+            f"""
+            <div class="note-card">
+              <div class="card-label">{note.lang.upper()}</div>
+              <div class="note-title">{note.title}</div>
+              <div class="note-meta">{note.date.isoformat()}</div>
+              <div class="muted">{note.summary}</div>
+              <div class="stack-row">
+                {"".join(f"<span class='tag-chip'>{tag_name}</span>" for tag_name in note.tags)}
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        if st.button("閱讀全文" if language == "zh" else "Read full note", key=f"note-{note.slug}"):
+            open_note(note.slug)
+
+
+def render_about_page(site_content: dict, language: str) -> None:
+    about = site_content["about"]
+    section_heading(
+        get_text(about["sectionLabel"], language),
+        get_text(about["title"], language),
+        get_text(about["subtitle"], language),
+    )
+    left, right = st.columns([1.1, 0.9], gap="large")
+    with left:
+        st.markdown('<div class="panel">', unsafe_allow_html=True)
+        for paragraph in about["paragraphs"]:
+            st.markdown(f'<p class="muted">{get_text(paragraph, language)}</p>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    with right:
+        for focus in about["focuses"]:
+            st.markdown(
+                f"""
+                <div class="feature-card" style="margin-bottom: 0.9rem;">
+                  <div class="about-title">{get_text(focus, language)}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        st.markdown(
+            """
+            <div class="link-card">
+              <div class="about-title">Contact</div>
+              <div class="muted">GitHub / LinkedIn / live demos are linked from the home page for fast review.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )

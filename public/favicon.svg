@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="DC monogram">
-  <rect width="128" height="128" rx="28" fill="#111827"/>
-  <path d="M30 34h29c21 0 35 12 35 30s-14 30-35 30H30V34Zm18 15v30h10c12 0 18-5 18-15s-6-15-18-15H48Z" fill="#fff"/>
-  <path d="M95 42c-6-5-14-8-24-8-18 0-33 12-33 30s15 30 33 30c10 0 18-3 24-8v-17H77v10c-2 1-4 1-6 1-10 0-17-6-17-16s7-16 17-16c7 0 13 3 18 8l6-14Z" fill="#93c5fd"/>
-</svg>
