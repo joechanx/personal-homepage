@@ -272,6 +272,24 @@ def inject_global_styles() -> None:
           line-height: 1.55;
           margin-bottom: 0.7rem;
         }
+        .page-intro-card {
+          margin: 1rem 0 1.4rem;
+          padding: 1.2rem 1.3rem;
+          border-radius: 24px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          background: rgba(255, 255, 255, 0.82);
+          box-shadow: 0 12px 30px rgba(16, 32, 51, 0.05);
+        }
+        .page-intro-title {
+          color: #102033;
+          font-size: 1.04rem;
+          font-weight: 800;
+          margin-bottom: 0.28rem;
+        }
+        .page-intro-copy {
+          color: #5a677b;
+          line-height: 1.72;
+        }
         .hero-footnote {
           color: #647288;
           font-size: 0.84rem;
@@ -281,13 +299,6 @@ def inject_global_styles() -> None:
         .note-meta {
           color: #6c778b;
           font-size: 0.85rem;
-          margin-top: 0.45rem;
-        }
-        .home-card-actions {
-          margin-top: 0.8rem;
-        }
-        .home-card-actions div[data-testid="stLinkButton"],
-        .home-card-actions div[data-testid="stButton"] {
           margin-top: 0.45rem;
         }
         .link-card-stat {
@@ -374,6 +385,18 @@ def render_site_header(name: str, role: str) -> None:
             <div class="site-title">{name}</div>
             <div class="site-subtitle">{role}</div>
           </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_page_intro(title: str, description: str) -> None:
+    st.markdown(
+        f"""
+        <div class="page-intro-card">
+          <div class="page-intro-title">{title}</div>
+          <div class="page-intro-copy">{description}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -560,10 +583,8 @@ def render_home_page(
                 """,
                 unsafe_allow_html=True,
             )
-            st.markdown('<div class="home-card-actions">', unsafe_allow_html=True)
             for link in project["links"]:
                 st.link_button(get_text(link["label"], language), link["href"], use_container_width=True)
-            st.markdown("</div>", unsafe_allow_html=True)
 
     section_heading(
         "知識內容" if language == "zh" else "Knowledge",
@@ -595,10 +616,8 @@ def render_home_page(
                     """,
                     unsafe_allow_html=True,
                 )
-                st.markdown('<div class="home-card-actions">', unsafe_allow_html=True)
                 if st.button("閱讀文章" if language == "zh" else "Read note", key=f"home-note-{note.slug}"):
                     open_note(note.slug)
-                st.markdown("</div>", unsafe_allow_html=True)
 
     contact = site_content["contact"]
     section_heading(
@@ -620,14 +639,12 @@ def render_home_page(
                 """,
                 unsafe_allow_html=True,
             )
-            st.markdown('<div class="home-card-actions">', unsafe_allow_html=True)
             for item in group["items"]:
                 st.link_button(
                     f'{get_text(item["label"], language)} | {get_text(item["description"], language)}',
                     item["href"],
                     use_container_width=True,
                 )
-            st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_projects_page(site_content: dict, language: str) -> None:
@@ -638,6 +655,12 @@ def render_projects_page(site_content: dict, language: str) -> None:
         if language == "zh"
         else "Use projects to show what you built, how you approached it, and how the result can extend further.",
     )
+    render_page_intro(
+        "這裡收錄目前公開展示的代表案例。" if language == "zh" else "This page collects the public projects that best represent my delivery style.",
+        "重點不是只列出技術棧，而是讓合作方快速理解需求拆解、角色分工與可延伸方向。"
+        if language == "zh"
+        else "The goal is not just to list the stack, but to make the scoping, role, and extension path easy to evaluate.",
+    )
     for project in site_content["projects"]:
         left, right = st.columns([0.72, 0.28], gap="large")
         with left:
@@ -646,9 +669,9 @@ def render_projects_page(site_content: dict, language: str) -> None:
                 <div class="project-card">
                   <div class="card-label">{get_text(project["tag"], language)}</div>
                   <div class="project-title">{get_text(project["title"], language)}</div>
-                  <div class="muted">{get_text(project["description"], language)}</div>
-                  <div class="about-title">{'我的角色' if language == 'zh' else 'My role'}</div>
-                  <div class="muted">{get_text(project["role"], language)}</div>
+                  <div class="card-summary">{get_text(project["description"], language)}</div>
+                  <div class="card-meta-label">{'我的角色' if language == 'zh' else 'My role'}</div>
+                  <div class="card-role">{get_text(project["role"], language)}</div>
                   <div class="stack-row">
                     {"".join(f"<span class='stack-badge'>{item}</span>" for item in project["stack"])}
                   </div>
@@ -702,6 +725,12 @@ def render_notes_page(
         if language == "zh"
         else "Published notes from your Obsidian workflow, covering implementation insights, tooling, and case-driven writeups.",
     )
+    render_page_intro(
+        "這裡會顯示從 Obsidian 發布流程整理過的技術筆記。" if language == "zh" else "This page surfaces technical notes curated from the Obsidian publishing workflow.",
+        "你可以用關鍵字、標籤與日期快速篩選，讓筆記頁更像知識入口而不是單純的文章堆疊。"
+        if language == "zh"
+        else "Use keywords, tags, and sort order to turn the note archive into a navigable knowledge hub instead of a flat list.",
+    )
 
     if not notes:
         st.markdown(
@@ -749,7 +778,7 @@ def render_notes_page(
               <div class="card-label">{note.lang.upper()}</div>
               <div class="note-title">{note.title}</div>
               <div class="note-meta">{note.date.isoformat()}</div>
-              <div class="muted">{note.summary}</div>
+              <div class="card-summary">{note.summary}</div>
               <div class="stack-row">
                 {"".join(f"<span class='tag-chip'>{tag_name}</span>" for tag_name in note.tags)}
               </div>
@@ -767,6 +796,12 @@ def render_about_page(site_content: dict, language: str) -> None:
         get_text(about["sectionLabel"], language),
         get_text(about["title"], language),
         get_text(about["subtitle"], language),
+    )
+    render_page_intro(
+        "合作偏好是先把需求整理成可交付的第一版，再逐步擴充。" if language == "zh" else "I prefer shaping work into a usable first delivery, then expanding from there.",
+        "這頁集中整理合作方式、適合案型與維護觀點，讓訪客快速判斷是否適合一起合作。"
+        if language == "zh"
+        else "This page summarizes collaboration style, project fit, and maintenance priorities so visitors can quickly gauge fit.",
     )
     left, right = st.columns([1.1, 0.9], gap="large")
     with left:
