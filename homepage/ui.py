@@ -158,6 +158,11 @@ def inject_global_styles() -> None:
           line-height: 1.72;
           min-height: 5.4rem;
         }
+        .project-card .card-summary,
+        .note-card .card-summary,
+        .link-card .card-summary {
+          min-height: 0;
+        }
         .card-role {
           color: #526177;
           font-size: 0.9rem;
@@ -290,6 +295,39 @@ def inject_global_styles() -> None:
           color: #5a677b;
           line-height: 1.72;
         }
+        .page-strip {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.8rem;
+          margin: 0.2rem 0 1.2rem;
+        }
+        .page-strip-card {
+          padding: 0.95rem 1rem;
+          border-radius: 20px;
+          border: 1px solid rgba(214, 223, 236, 0.95);
+          background: rgba(255, 255, 255, 0.76);
+          box-shadow: 0 10px 24px rgba(16, 32, 51, 0.04);
+        }
+        .page-strip-label {
+          color: #6b7790;
+          font-size: 0.73rem;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .page-strip-value {
+          color: #102033;
+          font-size: 1rem;
+          font-weight: 800;
+          line-height: 1.35;
+          margin-top: 0.28rem;
+        }
+        .page-strip-note {
+          color: #5a677b;
+          font-size: 0.82rem;
+          line-height: 1.55;
+          margin-top: 0.2rem;
+        }
         .action-panel {
           padding: 1.1rem 1.1rem 0.9rem;
           border-radius: 22px;
@@ -365,6 +403,11 @@ def inject_global_styles() -> None:
           background: rgba(255, 255, 255, 0.68);
           color: #5d6c82;
         }
+        .soft-divider {
+          height: 1px;
+          background: rgba(221, 229, 240, 0.92);
+          margin: 1.2rem 0 1.45rem;
+        }
         .note-inline-image {
           width: 100%;
           border-radius: 18px;
@@ -392,6 +435,7 @@ def inject_global_styles() -> None:
           background: rgba(255, 255, 255, 0.95);
         }
         @media (max-width: 900px) {
+          .page-strip,
           .skill-grid,
           .proof-grid {
             grid-template-columns: 1fr;
@@ -438,6 +482,24 @@ def render_page_intro(title: str, description: str) -> None:
           <div class="page-intro-copy">{description}</div>
         </div>
         """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_page_strip(items: list[tuple[str, str, str]]) -> None:
+    st.markdown(
+        "<div class='page-strip'>"
+        + "".join(
+            f"""
+            <div class="page-strip-card">
+              <div class="page-strip-label">{label}</div>
+              <div class="page-strip-value">{value}</div>
+              <div class="page-strip-note">{note}</div>
+            </div>
+            """
+            for label, value, note in items
+        )
+        + "</div>",
         unsafe_allow_html=True,
     )
 
@@ -700,7 +762,27 @@ def render_projects_page(site_content: dict, language: str) -> None:
         if language == "zh"
         else "The goal is not just to list the stack, but to make the scoping, role, and extension path easy to evaluate.",
     )
-    for project in site_content["projects"]:
+    render_page_strip(
+        [
+            (
+                "Projects",
+                f"{len(site_content['projects']):02d}",
+                "目前公開展示的案例數" if language == "zh" else "public case studies currently shown",
+            ),
+            (
+                "Delivery Lens",
+                "API + Automation",
+                "以可交付與可維護為主" if language == "zh" else "delivery and maintainability first",
+            ),
+            (
+                "Review Mode",
+                "Code / Demo",
+                "可以同時看原始碼與成果" if language == "zh" else "review both source code and live output",
+            ),
+        ]
+    )
+    projects = site_content["projects"]
+    for index, project in enumerate(projects):
         left, right = st.columns([0.72, 0.28], gap="large")
         with left:
             st.markdown(
@@ -730,6 +812,8 @@ def render_projects_page(site_content: dict, language: str) -> None:
             )
             for item in project["links"]:
                 st.link_button(get_text(item["label"], language), item["href"], use_container_width=True)
+        if index != len(projects) - 1:
+            st.markdown('<div class="soft-divider"></div>', unsafe_allow_html=True)
 
 
 def render_notes_page(
@@ -779,6 +863,25 @@ def render_notes_page(
         if language == "zh"
         else "Use keywords, tags, and sort order to turn the note archive into a navigable knowledge hub instead of a flat list.",
     )
+    render_page_strip(
+        [
+            (
+                "Published Notes",
+                f"{len(notes):02d}",
+                "目前可瀏覽的文章數量" if language == "zh" else "articles currently available",
+            ),
+            (
+                "Topics",
+                f"{len(tags):02d}",
+                "可用標籤數量" if language == "zh" else "available tag filters",
+            ),
+            (
+                "Source",
+                "Obsidian",
+                "由發布流程同步進網站" if language == "zh" else "synced in through the publishing workflow",
+            ),
+        ]
+    )
 
     if not notes:
         st.markdown(
@@ -787,6 +890,7 @@ def render_notes_page(
         )
         return
 
+    st.caption("用搜尋、標籤與排序快速縮小你想看的內容。" if language == "zh" else "Use search, tags, and sorting to narrow down the content you want.")
     filter_left, filter_center, filter_right = st.columns([0.42, 0.26, 0.32])
     with filter_left:
         keyword = st.text_input("搜尋筆記" if language == "zh" else "Search notes", placeholder="API / automation / workflow")
