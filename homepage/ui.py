@@ -65,6 +65,13 @@ def inject_global_styles() -> None:
           padding: 1.3rem;
           min-height: 100%;
         }
+        .project-card,
+        .note-card,
+        .link-card {
+          display: flex;
+          flex-direction: column;
+          gap: 0.65rem;
+        }
         .article-shell {
           padding: 1.7rem;
         }
@@ -145,6 +152,24 @@ def inject_global_styles() -> None:
         .project-title,
         .note-title {
           font-size: 1.14rem;
+        }
+        .card-summary {
+          color: #5a677b;
+          line-height: 1.72;
+          min-height: 5.4rem;
+        }
+        .card-role {
+          color: #526177;
+          font-size: 0.9rem;
+          line-height: 1.65;
+          padding-top: 0.15rem;
+        }
+        .card-meta-label {
+          color: #6b7790;
+          font-size: 0.76rem;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
         }
         .tag-row,
         .stack-row,
@@ -251,6 +276,20 @@ def inject_global_styles() -> None:
           color: #6c778b;
           font-size: 0.85rem;
           margin-top: 0.45rem;
+        }
+        .home-card-actions {
+          margin-top: 0.8rem;
+        }
+        .home-card-actions div[data-testid="stLinkButton"],
+        .home-card-actions div[data-testid="stButton"] {
+          margin-top: 0.45rem;
+        }
+        .link-card-stat {
+          color: #102033;
+          font-size: 1.55rem;
+          font-weight: 800;
+          line-height: 1;
+          margin-top: 0.2rem;
         }
         .article-title {
           font-size: clamp(1.9rem, 2.5vw, 2.65rem);
@@ -504,8 +543,9 @@ def render_home_page(
                 <div class="project-card">
                   <div class="card-label">{get_text(project["tag"], language)}</div>
                   <div class="project-title">{get_text(project["title"], language)}</div>
-                  <div class="muted">{get_text(project["description"], language)}</div>
-                  <div class="note-meta">{'你的角色' if language == 'zh' else 'Role'}: {get_text(project["role"], language)}</div>
+                  <div class="card-summary">{get_text(project["description"], language)}</div>
+                  <div class="card-meta-label">{'你的角色' if language == 'zh' else 'Role'}</div>
+                  <div class="card-role">{get_text(project["role"], language)}</div>
                   <div class="stack-row">
                     {"".join(f"<span class='stack-badge'>{item}</span>" for item in project["stack"])}
                   </div>
@@ -513,8 +553,10 @@ def render_home_page(
                 """,
                 unsafe_allow_html=True,
             )
+            st.markdown('<div class="home-card-actions">', unsafe_allow_html=True)
             for link in project["links"]:
                 st.link_button(get_text(link["label"], language), link["href"], use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
 
     section_heading(
         "知識內容" if language == "zh" else "Knowledge",
@@ -538,7 +580,7 @@ def render_home_page(
                       <div class="card-label">{note.lang.upper()}</div>
                       <div class="note-title">{note.title}</div>
                       <div class="note-meta">{note.date.isoformat()}</div>
-                      <div class="muted">{note.summary}</div>
+                      <div class="card-summary">{note.summary}</div>
                       <div class="stack-row">
                         {"".join(f"<span class='tag-chip'>{tag}</span>" for tag in note.tags)}
                       </div>
@@ -546,8 +588,10 @@ def render_home_page(
                     """,
                     unsafe_allow_html=True,
                 )
+                st.markdown('<div class="home-card-actions">', unsafe_allow_html=True)
                 if st.button("閱讀文章" if language == "zh" else "Read note", key=f"home-note-{note.slug}"):
                     open_note(note.slug)
+                st.markdown("</div>", unsafe_allow_html=True)
 
     contact = site_content["contact"]
     section_heading(
@@ -561,18 +605,22 @@ def render_home_page(
             st.markdown(
                 f"""
                 <div class="link-card">
+                  <div class="card-meta-label">{'Link Group' if language == 'en' else 'Link Group'}</div>
                   <div class="about-title">{get_text(group["title"], language)}</div>
+                  <div class="link-card-stat">{len(group["items"]):02d}</div>
                   <div class="muted">{len(group["items"])} {"個入口" if language == "zh" else "entry points"}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
+            st.markdown('<div class="home-card-actions">', unsafe_allow_html=True)
             for item in group["items"]:
                 st.link_button(
                     f'{get_text(item["label"], language)} | {get_text(item["description"], language)}',
                     item["href"],
                     use_container_width=True,
                 )
+            st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_projects_page(site_content: dict, language: str) -> None:
