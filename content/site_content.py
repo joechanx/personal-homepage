@@ -1,8 +1,8 @@
 SITE_CONTENT = {
     "seo": {
         "description": {
-            "zh": "Dexter Chang 的 Streamlit 個人網站，整合作品展示、技術筆記與 Obsidian 發布內容。",
-            "en": "Dexter Chang's Streamlit portfolio site for projects, technical notes, and curated Obsidian content.",
+            "zh": "Dexter Chang 的個人網站，整合作品展示、技術筆記與 Obsidian 發布內容。",
+            "en": "Dexter Chang's portfolio site for projects, technical notes, and curated Obsidian content.",
         }
     },
     "profile": {
@@ -113,10 +113,6 @@ SITE_CONTENT = {
             "zh": "目前可協助的核心方向",
             "en": "Core areas I can help with",
         },
-        "subtitle": {
-            "zh": "聚焦在實務可落地的 API 整合、自動化流程與內容驅動的技術網站。",
-            "en": "Focused on practical API integration, automation workflow delivery, and content-driven technical websites.",
-        },
         "items": [
             {
                 "number": "01",
@@ -161,10 +157,6 @@ SITE_CONTENT = {
                 "zh": "以 Python 與 FastAPI 展示第三方 API 串接流程，包含 request handling、response mapping、webhook flow 與驗證邏輯。",
                 "en": "A Python and FastAPI demo focused on third-party API integration, request handling, response mapping, webhook flow, and validation logic.",
             },
-            "role": {
-                "zh": "需求拆解、API mapping、FastAPI 實作與展示內容整理",
-                "en": "Requirement scoping, API mapping, FastAPI implementation, and presentation design",
-            },
             "stack": ["Python", "FastAPI", "Webhook", "Validation"],
             "links": [
                 {
@@ -186,10 +178,6 @@ SITE_CONTENT = {
             "description": {
                 "zh": "展示檔案與資料流程自動化能力，涵蓋批次整理、清理、合併與輸出報表等常見 automation 類型需求。",
                 "en": "A demo that shows file and data workflow automation, including batch cleanup, merging, transformation, and reporting tasks.",
-            },
-            "role": {
-                "zh": "流程設計、批次處理腳本、資料輸出邏輯與網站展示",
-                "en": "Workflow design, batch scripting, export logic, and web presentation",
             },
             "stack": ["Python", "CSV / Excel", "Data Processing", "Automation"],
             "links": [
