@@ -19,6 +19,7 @@ NOTE_ASSETS_DIR = BASE_DIR / "static" / "notes"
 PROFILE_IMAGE = BASE_DIR / "public" / "profile.jpg"
 DEFAULT_LANGUAGE = "zh"
 LANGUAGES = ("zh", "en")
+LANGUAGE_CONTROL_KEY = "language_selector"
 
 
 def get_language() -> str:
@@ -31,6 +32,20 @@ def get_language() -> str:
 def set_language(language: str) -> None:
     if language in LANGUAGES:
         st.session_state.language = language
+
+
+def sync_language_control() -> None:
+    selected_language = st.session_state.get(LANGUAGE_CONTROL_KEY, DEFAULT_LANGUAGE)
+    if selected_language not in LANGUAGES:
+        selected_language = DEFAULT_LANGUAGE
+    set_language(selected_language)
+
+
+def initialize_language_state() -> None:
+    language = get_language()
+    st.session_state.language = language
+    if st.session_state.get(LANGUAGE_CONTROL_KEY) not in LANGUAGES:
+        st.session_state[LANGUAGE_CONTROL_KEY] = language
 
 
 def get_selected_note_slug() -> str | None:
@@ -56,27 +71,34 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+initialize_language_state()
 site_content = get_site_content()
 notes = load_notes(NOTES_DIR, NOTE_ASSETS_DIR)
-language = get_language()
 selected_note = find_note_by_slug(notes, get_selected_note_slug())
 
 inject_global_styles()
-render_site_header(site_content["profile"]["name"], get_text(site_content["profile"]["role"], language))
+header_placeholder = st.empty()
 
 header_left, header_right = st.columns([0.75, 0.25])
 with header_left:
-    st.caption(get_text(site_content["seo"]["description"], language))
+    pass
 with header_right:
-    selected_language = st.segmented_control(
+    st.segmented_control(
         "Language",
         options=list(LANGUAGES),
-        default=language,
+        default=get_language(),
+        key=LANGUAGE_CONTROL_KEY,
+        on_change=sync_language_control,
         format_func=lambda value: "中文 / EN" if value == "zh" else "EN / 中文",
         label_visibility="collapsed",
     )
-    set_language(selected_language or language)
-    language = get_language()
+
+language = get_language()
+with header_placeholder.container():
+    render_site_header(site_content["profile"]["name"], get_text(site_content["profile"]["role"], language))
+
+with header_left:
+    st.caption(get_text(site_content["seo"]["description"], language))
 
 
 def home_page() -> None:
