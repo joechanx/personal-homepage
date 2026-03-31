@@ -226,38 +226,38 @@ def inject_global_styles() -> None:
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 0.8rem;
-          margin-top: 1.2rem;
+          margin-top: 1rem;
         }
         .proof-card {
-          border-radius: 18px;
+          border-radius: 16px;
           border: 1px solid rgba(214, 223, 236, 0.95);
-          background: rgba(255, 255, 255, 0.84);
-          padding: 0.9rem 1rem;
+          background: rgba(255, 255, 255, 0.72);
+          padding: 0.8rem 0.95rem 0.82rem;
         }
         .proof-label {
           color: #6b7790;
-          font-size: 0.78rem;
-          font-weight: 700;
+          font-size: 0.72rem;
+          font-weight: 800;
           letter-spacing: 0.06em;
           text-transform: uppercase;
         }
         .proof-value {
           color: #102033;
-          font-size: 1.45rem;
+          font-size: 1.18rem;
           font-weight: 800;
-          margin-top: 0.25rem;
+          margin-top: 0.18rem;
         }
         .proof-note {
           color: #5a677b;
-          font-size: 0.84rem;
-          margin-top: 0.2rem;
+          font-size: 0.8rem;
+          margin-top: 0.18rem;
           line-height: 1.5;
         }
         .cta-shell {
-          margin-top: 1.2rem;
+          margin-top: 1rem;
           border-radius: 24px;
           border: 1px solid rgba(214, 223, 236, 0.95);
-          background: rgba(255, 255, 255, 0.75);
+          background: rgba(255, 255, 255, 0.78);
           padding: 1rem 1rem 0.8rem;
         }
         .cta-title {
@@ -271,6 +271,12 @@ def inject_global_styles() -> None:
           font-size: 0.85rem;
           line-height: 1.55;
           margin-bottom: 0.7rem;
+        }
+        .hero-footnote {
+          color: #647288;
+          font-size: 0.84rem;
+          line-height: 1.6;
+          margin-top: 0.95rem;
         }
         .note-meta {
           color: #6c778b;
@@ -385,19 +391,19 @@ def render_home_page(
     services = site_content["services"]
     hero_stats = [
         (
-            "Projects",
+            "Featured Work",
             f"{len(site_content['projects']):02d}",
-            "精選案例入口" if language == "zh" else "featured case studies",
+            "精選案例" if language == "zh" else "featured case studies",
         ),
         (
-            "Notes",
+            "Published Notes",
             f"{len(notes):02d}",
             "公開技術筆記" if language == "zh" else "published notes",
         ),
         (
-            "Focus",
-            "API",
-            "integration + automation" if language == "en" else "integration + automation",
+            "Primary Focus",
+            "API + Auto",
+            "串接與流程整理" if language == "zh" else "integration and workflow cleanup",
         ),
     ]
     left, right = st.columns([1.12, 0.88], gap="large")
@@ -431,6 +437,7 @@ def render_home_page(
                 {"".join(f"<span class='stack-badge'>{badge}</span>" for badge in profile["heroBadges"])}
               </div>
               <p class="muted">{get_text(profile["availability"], language)}</p>
+              <div class="hero-footnote">{"適合需要先做出可用版本，再逐步擴充的 API integration 與 automation 類型需求。" if language == "zh" else "A strong fit for API integration and automation projects that need a usable first version with room to expand."}</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -456,7 +463,7 @@ def render_home_page(
                 f"""
                 <div class="cta-shell">
                   <div class="cta-title">{get_text(profile["profileLinksTitle"], language)}</div>
-                  <div class="cta-note">{"先從背景與公開程式碼快速了解我。" if language == "zh" else "Start with background and public code for a quick overview."}</div>
+                  <div class="cta-note">{"先從背景、公開程式碼與合作定位快速了解我。" if language == "zh" else "Start with background, public code, and delivery context for a quick overview."}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -473,7 +480,7 @@ def render_home_page(
                 f"""
                 <div class="cta-shell">
                   <div class="cta-title">{get_text(profile["demoLinksTitle"], language)}</div>
-                  <div class="cta-note">{"如果你想先看可操作成果，直接從這裡進入。" if language == "zh" else "If you want to see working examples first, start here."}</div>
+                  <div class="cta-note">{"如果你想先看已完成的實作成果，可以直接從這裡進入。" if language == "zh" else "If you prefer to review working examples first, start here."}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,

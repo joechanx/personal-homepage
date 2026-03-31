@@ -12,16 +12,16 @@ SITE_CONTENT = {
             "en": "Editorial Portfolio / Streamlit",
         },
         "heroLead": {
-            "zh": "為需要 API 整合、自動化流程與可交付內容的團隊提供實作支援。",
-            "en": "Implementation support for teams that need API integration, automation workflows, and deliverable technical content.",
+            "zh": "協助團隊把 API 串接、自動化流程與資料工作流整理成可交付的實作成果。",
+            "en": "Helping teams turn API integrations, automation workflows, and data pipelines into deliverable implementation work.",
         },
         "role": {
             "zh": "Python 整合與自動化工程師",
             "en": "Python integration and automation engineer",
         },
         "summary": {
-            "zh": "我把 API 串接、自動化流程與資料工作流整理成可落地的系統，並用案例與筆記清楚說明我如何拆解問題與交付成果。",
-            "en": "I turn API integrations, automation workflows, and data pipelines into deliverable systems, then explain the work through case studies and technical notes.",
+            "zh": "我擅長把分散的需求拆成可實作的流程，處理 API mapping、資料交換、自動化腳本與交付整理，讓成果能被看懂、接手與延伸。",
+            "en": "I break scattered requirements into implementation-ready workflows, covering API mapping, data exchange, automation scripts, and delivery handoff so the result is easier to understand and extend.",
         },
         "focusCards": [
             {
@@ -56,8 +56,8 @@ SITE_CONTENT = {
             },
         ],
         "availability": {
-            "zh": "目前可承接 API integration、自動化腳本、資料工作流優化與內容型技術網站規劃。",
-            "en": "Available for API integration, automation scripts, data workflow optimization, and content-driven technical website planning.",
+            "zh": "目前可承接 API integration、自動化腳本、資料工作流優化，以及以作品與內容呈現技術能力的網站整理。",
+            "en": "Available for API integration, automation scripts, data workflow optimization, and technical portfolio websites that present delivery work clearly.",
         },
         "locationLabel": {
             "zh": "地區",
